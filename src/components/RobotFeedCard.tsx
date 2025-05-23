@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -69,7 +68,7 @@ export const RobotFeedCard = ({
             <div className="flex items-center gap-1">
               <div className="h-1.5 w-12 bg-gray-200 rounded-full">
                 <div 
-                  className="h-full bg-orange-500 rounded-full"
+                  className="h-full bg-sky-500 rounded-full"
                   style={{ width: `${batteryLevel}%` }}
                 />
               </div>
@@ -79,7 +78,7 @@ export const RobotFeedCard = ({
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <TrendingUp className="h-3.5 w-3.5" />
-            <span>{topStake} DOT</span>
+            <span>{topStake} WND</span>
           </div>
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -89,7 +88,7 @@ export const RobotFeedCard = ({
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
-            <span>{chargeRate} DOT/hr</span>
+            <span>{chargeRate} WND/hr</span>
           </div>
         </div>
         

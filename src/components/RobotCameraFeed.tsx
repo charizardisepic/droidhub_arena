@@ -57,12 +57,12 @@ export const RobotCameraFeed = ({
         {isConnected && (
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm">
-              <Users className="h-4 w-4 text-orange-400" />
+              <Users className="h-4 w-4 text-sky-400" />
               <span>{viewerCount} watching</span>
             </div>
-            <div className="flex items-center gap-2 bg-orange-500/20 px-3 py-1 rounded-full">
-              <Clock className="h-4 w-4 text-orange-400" />
-              <span className="font-semibold text-orange-400">{chargeRate} WND/min</span>
+            <div className="flex items-center gap-2 bg-sky-500/20 px-3 py-1 rounded-full">
+              <Clock className="h-4 w-4 text-sky-400" />
+              <span className="font-semibold text-sky-400">{chargeRate} WND/min</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 soft-pulse"></div>

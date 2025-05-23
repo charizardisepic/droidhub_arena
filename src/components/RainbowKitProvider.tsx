@@ -17,34 +17,34 @@ interface RainbowKitWrapperProps {
 // WalletConnect Project ID
 const projectId = "f648e94e1f1c32327aaa0416d6409e2b"
 
-// Define the Asset-Hub Westend testnet
-const westendAssetHub = {
-  id: 420420421,
-  name: "Asset-Hub Westend TestNet",
+// Define the Avalanche C-Chain mainnet
+const avalancheCChain = {
+  id: 43114,
+  name: "Avalanche C-Chain",
   nativeCurrency: {
-    name: "Westend",
-    symbol: "WND",
-    decimals: 12,
+    name: "Avalanche",
+    symbol: "AVAX",
+    decimals: 18,
   },
   rpcUrls: {
-    default: { http: ["https://westend-asset-hub-rpc.polkadot.io"] },
+    default: { http: ["https://avalanche-c-chain-rpc.publicnode.com"] },
   },
   blockExplorers: {
     default: {
-      name: "Subscan",
-      url: "https://assethub-westend.subscan.io",
+      name: "SnowTrace",
+      url: "https://snowtrace.io",
     },
   },
-  testnet: true,
+  testnet: false,
 } as const
 
 // Use getDefaultConfig from RainbowKit which properly sets up wagmi
 const config = getDefaultConfig({
-  appName: "Decentrabot",
+  appName: "DroidHub",
   projectId,
-  chains: [westendAssetHub],
+  chains: [avalancheCChain],
   transports: {
-    [westendAssetHub.id]: http(),
+    [avalancheCChain.id]: http(),
   },
 })
 

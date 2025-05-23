@@ -126,13 +126,13 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
               <div
                 key={stake.address}
                 className={`flex justify-between items-center p-1 rounded-md ${
-                  index === 0 ? "bg-orange-100 dark:bg-orange-900/30" : ""
-                } ${isCurrentUser ? "border border-orange-500" : ""}`}
+                  index === 0 ? "bg-sky-100 dark:bg-sky-900/30" : ""
+                } ${isCurrentUser ? "border border-sky-500" : ""}`}
               >
                 <div className="flex items-center gap-2">
                   <div className="font-bold text-xs">{index + 1}</div>
                   <div className="flex flex-col">
-                    <span className={`text-xs font-medium ${index === 0 ? "text-orange-500" : ""}`}>
+                    <span className={`text-xs font-medium ${index === 0 ? "text-sky-500" : ""}`}>
                       {stake.address}
                       {index === 0 && " (Controller)"}
                       {isCurrentUser && " (You)"}

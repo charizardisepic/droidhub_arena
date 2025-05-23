@@ -5,10 +5,10 @@ import { ethers } from "ethers"
 import { useState, useCallback } from "react"
 
 // RPC endpoint and contract configuration
-const RPC_URL = "https://westend-asset-hub-rpc.polkadot.io"
+const RPC_URL = "wss://avalanche-c-chain-rpc.publicnode.com"
 const CONTRACT_ADDRESS = "0xB3f57e8fc33f61Ce464a9c287f34EF3FD422B1ae"
 
-// Full ABI based on the DecentraBotContract
+// Full ABI based on the DroidHubContract
 const ABI = [
   // Staking functions
   "function stakeTokens() payable",
