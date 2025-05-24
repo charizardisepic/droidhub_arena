@@ -25,9 +25,9 @@ export const StakeDashboard = () => {
   // Use a ref to track if data has been fetched
   const dataFetched = useRef(false)
 
-  const { getUserBalance, getHighestStaker, getStakedBalance, stakeTokens, withdrawTokens } = useBlockchainUtils()
+  const { getUserBalance, getHighestStaker, getStakedBalance, stakeTokens, withdrawTokens, getNetwork } = useBlockchainUtils()
 
-  // Update to poll every 5 seconds and replace DOT with WND
+  // Update to poll every 5 seconds and replace DOT with AVAX
   useEffect(() => {
     let isMounted = true
     let intervalId: NodeJS.Timeout | null = null
@@ -106,7 +106,7 @@ export const StakeDashboard = () => {
     try {
       const success = await stakeTokens(stakeAmount)
       if (success) {
-        toast.success(`Successfully staked ${stakeAmount} WND`)
+        toast.success(`Successfully staked ${stakeAmount} AVAX`)
         // Optimistically update balances
         setIsStakeDialogOpen(false)
         setStakeAmount("")
@@ -149,7 +149,7 @@ export const StakeDashboard = () => {
     try {
       const success = await withdrawTokens(withdrawAmount)
       if (success) {
-        toast.success(`Successfully withdrawn ${withdrawAmount} WND`)
+        toast.success(`Successfully withdrawn ${withdrawAmount} AVAX`)
         setWithdrawAmount("")
         setIsWithdrawDialogOpen(false)
         // Optimistically update balances
@@ -176,7 +176,7 @@ export const StakeDashboard = () => {
       <div className="p-2 flex flex-col justify-between h-full">
         <div>
           <h3 className="text-sm font-bold mb-1 flex items-center">
-            Stake Dashboard <span className="text-[10px] text-sky-400 ml-1">(Westend)</span>
+            Stake Dashboard <span className="text-[10px] text-sky-400 ml-1">({getNetwork()})</span>
           </h3>
 
           <div className="space-y-0.5">
@@ -186,14 +186,14 @@ export const StakeDashboard = () => {
                 {userBalance === "Loading..." ? (
                   <span className="animate-pulse">Loading...</span>
                 ) : (
-                  `${userBalance} WND`
+                  `${userBalance} AVAX`
                 )}
               </span>
             </div>
 
             <div className="flex justify-between items-center border-b border-border pb-0.5">
               <span className="text-xs text-muted-foreground">Top Stake:</span>
-              <span className="text-xs font-bold text-sky-400">{topStake} WND</span>
+              <span className="text-xs font-bold text-sky-400">{topStake} AVAX</span>
             </div>
 
             <div className="flex justify-between items-center">
@@ -212,14 +212,14 @@ export const StakeDashboard = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Stake WND Tokens</DialogTitle>
+                <DialogTitle>Stake AVAX Tokens</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Amount to Stake</label>
                   <Input
                     type="number"
-                    placeholder="Enter WND amount"
+                    placeholder="Enter AVAX amount"
                     value={stakeAmount}
                     onChange={(e) => setStakeAmount(e.target.value)}
                   />
@@ -239,14 +239,14 @@ export const StakeDashboard = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Withdraw WND Tokens</DialogTitle>
+                <DialogTitle>Withdraw AVAX Tokens</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Amount to Withdraw</label>
                   <Input
                     type="number"
-                    placeholder="Enter WND amount"
+                    placeholder="Enter AVAX amount"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                   />

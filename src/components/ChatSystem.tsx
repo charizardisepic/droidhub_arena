@@ -37,7 +37,7 @@ export const ChatSystem = () => {
     {
       id: 5,
       address: "0x8b7f...4a1e",
-      message: "This is so cool, controlling a robot with WND tokens!",
+      message: "This is so cool, controlling a robot with AVAX tokens!",
       timestamp: Date.now() - 30000,
     },
     {

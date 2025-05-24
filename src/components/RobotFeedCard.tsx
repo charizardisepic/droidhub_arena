@@ -78,7 +78,7 @@ export const RobotFeedCard = ({
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <TrendingUp className="h-3.5 w-3.5" />
-            <span>{topStake} WND</span>
+            <span>{topStake} AVAX</span>
           </div>
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -88,7 +88,7 @@ export const RobotFeedCard = ({
           
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
-            <span>{chargeRate} WND/hr</span>
+            <span>{chargeRate} AVAX/hr</span>
           </div>
         </div>
         

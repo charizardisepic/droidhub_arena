@@ -36,7 +36,7 @@ export const LiveLogFeed = () => {
           const shortAddress = `${controller.slice(0, 6)}...${controller.slice(-4)}`
           const eventTypes = [
             `${shortAddress} is now in control`,
-            `Fee collected: 0.5 WND`,
+            `Fee collected: 0.5 AVAX`,
             `Command sent: up`,
             `Command sent: down`,
             `Command sent: left`,

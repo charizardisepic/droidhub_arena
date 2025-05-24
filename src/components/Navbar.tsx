@@ -10,8 +10,23 @@ import { useBlockchainUtils } from "@/lib/blockchainUtils"
 export const Navbar = () => {
   const location = useLocation()
   const { address, isConnected } = useAccount()
+  // Single hook call for blockchain utilities
+  const { getUserBalance, getNetwork } = useBlockchainUtils()
+  const [network, setNetwork] = useState<'MainNet' | 'TestNet'>(getNetwork())
   const [userBalance, setUserBalance] = useState("0.0")
-  const { getUserBalance } = useBlockchainUtils()
+
+  useEffect(() => {
+    // Initialize network label via utils
+    setNetwork(getNetwork())
+    const handler = (chainIdHex: string) => {
+      setNetwork(getNetwork())
+    }
+    // Listen for chain changes
+    (window as any).ethereum?.on('chainChanged', handler)
+    return () => {
+      (window as any).ethereum?.removeListener('chainChanged', handler)
+    }
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -50,7 +65,9 @@ export const Navbar = () => {
             <span className="font-bold text-2xl bg-gradient-to-r from-sky-500 to-sky-400 bg-clip-text text-transparent">
               DroidHub
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-sky-500/20 text-sky-400">Westend</span>
+            <span className="text-xs px-2 py-1 rounded-full bg-sky-500/20 text-sky-400">
+              {network}
+            </span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
             <Link
@@ -90,7 +107,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-4">
           {isConnected && (
             <Badge variant="outline" className="border-sky-400 bg-sky-500/10 text-sky-400 text-sm px-3 py-1">
-              Balance: {userBalance} WND
+              Balance: {userBalance} AVAX
             </Badge>
           )}
           <div className="scale-95">

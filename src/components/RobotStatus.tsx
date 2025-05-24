@@ -120,7 +120,7 @@ export function RobotStatus({ robotId = "robot-1" }: RobotStatusProps) {
           <div className="flex justify-between items-center">
             <span className="text-xs text-muted-foreground">Fee Rate</span>
             <span className="text-xs font-medium">
-              {botFee !== null ? `${Number.parseFloat(botFee).toFixed(2)} WND/min` : "Loading..."}
+              {botFee !== null ? `${Number.parseFloat(botFee).toFixed(2)} AVAX/min` : "Loading..."}
             </span>
           </div>
         </div>

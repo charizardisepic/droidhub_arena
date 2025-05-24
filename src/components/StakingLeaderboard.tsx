@@ -119,7 +119,7 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
             const isCurrentUser = address && stake.address.toLowerCase().includes(address.toLowerCase().slice(2, 6))
 
             // Display live countdown for the top staker
-            const countdownDisplay =
+            const countdoAVAXisplay =
               index === 0 && countdown.minutes > 0 ? `${countdown.minutes}m ${countdown.seconds}s` : stake.timeRemaining
 
             return (
@@ -137,12 +137,12 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
                       {index === 0 && " (Controller)"}
                       {isCurrentUser && " (You)"}
                     </span>
-                    {index === 0 && countdownDisplay && (
-                      <span className="text-[10px] text-muted-foreground">Time remaining: {countdownDisplay}</span>
+                    {index === 0 && countdoAVAXisplay && (
+                      <span className="text-[10px] text-muted-foreground">Time remaining: {countdoAVAXisplay}</span>
                     )}
                   </div>
                 </div>
-                <div className="text-xs font-medium">{stake.stake} WND</div>
+                <div className="text-xs font-medium">{stake.stake} AVAX</div>
               </div>
             )
           })}

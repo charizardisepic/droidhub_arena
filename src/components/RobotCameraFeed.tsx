@@ -62,7 +62,7 @@ export const RobotCameraFeed = ({
             </div>
             <div className="flex items-center gap-2 bg-sky-500/20 px-3 py-1 rounded-full">
               <Clock className="h-4 w-4 text-sky-400" />
-              <span className="font-semibold text-sky-400">{chargeRate} WND/min</span>
+              <span className="font-semibold text-sky-400">{chargeRate} AVAX/min</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 soft-pulse"></div>

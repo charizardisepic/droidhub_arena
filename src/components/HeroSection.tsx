@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
@@ -12,7 +11,7 @@ export const HeroSection = () => {
               Power the Future. Control the Bot.
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-400 md:text-xl">
-              Stake WND. Outbid. Take command of real-world robotics.
+              Stake AVAX. Outbid. Take command of real-world robotics.
             </p>
           </div>
           <div className="flex justify-center w-full mt-6 relative z-50">
@@ -23,7 +22,7 @@ export const HeroSection = () => {
         </div>
       </div>
       
-      <div className="absolute -bottom-48 left-1/2 -translate-x-1/2 w-2/3 h-96 bg-orange-500/20 blur-[100px] rounded-full opacity-60 soft-pulse z-10"></div>
+      <div className="absolute -bottom-48 left-1/2 -translate-x-1/2 w-2/3 h-96 bg-sky-500/20 blur-[100px] rounded-full opacity-60 soft-pulse z-10"></div>
     </div>
   );
 };

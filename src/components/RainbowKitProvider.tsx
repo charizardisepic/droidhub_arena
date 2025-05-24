@@ -21,30 +21,30 @@ const projectId = "f648e94e1f1c32327aaa0416d6409e2b"
 const avalancheCChain = {
   id: 43114,
   name: "Avalanche C-Chain",
-  nativeCurrency: {
-    name: "Avalanche",
-    symbol: "AVAX",
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: { http: ["https://avalanche-c-chain-rpc.publicnode.com"] },
-  },
-  blockExplorers: {
-    default: {
-      name: "SnowTrace",
-      url: "https://snowtrace.io",
-    },
-  },
+  nativeCurrency: { name: "Avalanche", symbol: "AVAX", decimals: 18 },
+  rpcUrls: { default: { http: ["https://avalanche-c-chain-rpc.publicnode.com"] } },
+  blockExplorers: { default: { name: "SnowTrace", url: "https://snowtrace.io" } },
   testnet: false,
+} as const
+
+// Define the Avalanche Fuji C-Chain testnet
+const avalancheFujiTestnet = {
+  id: 43113,
+  name: "Avalanche Fuji C-Chain Testnet",
+  nativeCurrency: { name: "Avalanche", symbol: "AVAX", decimals: 18 },
+  rpcUrls: { default: { http: ["https://api.avax-test.network/ext/bc/C/rpc"] } },
+  blockExplorers: { default: { name: "Fuji Explorer", url: "https://subnets-test.avax.network/c-chain" } },
+  testnet: true,
 } as const
 
 // Use getDefaultConfig from RainbowKit which properly sets up wagmi
 const config = getDefaultConfig({
   appName: "DroidHub",
   projectId,
-  chains: [avalancheCChain],
+  chains: [avalancheCChain, avalancheFujiTestnet],
   transports: {
     [avalancheCChain.id]: http(),
+    [avalancheFujiTestnet.id]: http(),
   },
 })
 
