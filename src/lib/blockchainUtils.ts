@@ -1,7 +1,7 @@
 "use client"
 
 import { useAccount } from "wagmi"
-import { ethers } from "ethers"
+import * as ethers from "ethers"
 import { useState, useCallback } from "react"
 
 // RPC endpoints for Avalanche networks

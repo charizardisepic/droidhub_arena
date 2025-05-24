@@ -2,6 +2,7 @@
 
 import { useAccount } from "wagmi"
 import { useState, useEffect } from "react"
+import { toast, Toaster } from "@/components/ui/sonner"
 import { useSearchParams } from "react-router-dom"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
@@ -16,10 +17,59 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
 
 const AppPage = () => {
-  const { isConnected } = useAccount()
+  const { isConnected, address } = useAccount()
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedRobot, setSelectedRobot] = useState(searchParams.get("robot") || "robot-1")
   const blockchainUtils = useBlockchainUtils()
+  // Dynamic bot fee (AVAX per min)
+  const [botFee, setBotFee] = useState<string>("0.0")
+
+  // Fetch bot fee on mount
+  useEffect(() => {
+    ;(async () => {
+      const fee = await blockchainUtils.getBotFee()
+      setBotFee(fee)
+    })()
+  }, [blockchainUtils])
+
+  // UTC countdown to next minute
+  const [secondsToNextMinute, setSecondsToNextMinute] = useState(60 - new Date().getUTCSeconds())
+  // Central popup event ('losing' or 'gaining' control)
+  const [centralEvent, setCentralEvent] = useState<'losing' | 'gaining' | null>(null)
+  // Track previous controller state
+  const [prevIsController, setPrevIsController] = useState<boolean | null>(null)
+
+  // Initialize controller state once
+  useEffect(() => {
+    ;(async () => {
+      const ctrl = await blockchainUtils.getCurrentController()
+      setPrevIsController(ctrl.toLowerCase() === address?.toLowerCase())
+    })()
+  }, [address, blockchainUtils])
+
+  // Update countdown and check control at each UTC minute
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const secs = 60 - new Date().getUTCSeconds()
+      setSecondsToNextMinute(secs)
+      if (secs === 60) {
+        const ctrl = await blockchainUtils.getCurrentController()
+        const isController = ctrl.toLowerCase() === address?.toLowerCase()
+        if (prevIsController !== null && isController !== prevIsController) {
+          if (!isController) {
+            setCentralEvent('losing')
+          } else {
+            setCentralEvent('gaining')
+          }
+        }
+        setPrevIsController(isController)
+        // Update dynamic bot fee each UTC minute
+        const fee = await blockchainUtils.getBotFee()
+        setBotFee(fee)
+      }
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [address, blockchainUtils, prevIsController])
 
   useEffect(() => {
     // Update URL when robot changes
@@ -33,6 +83,13 @@ const AppPage = () => {
     setSearchParams({ robot: selectedRobot })
   }, [selectedRobot, setSearchParams])
 
+  // Clear central popup when countdown finishes
+  useEffect(() => {
+    if (centralEvent && secondsToNextMinute <= 1) {
+      setCentralEvent(null)
+    }
+  }, [secondsToNextMinute, centralEvent])
+
   const robots = [
     { id: "robot-1", name: "London Explorer", chargeRate: 2.5 },
     { id: "robot-2", name: "New York Explorer", chargeRate: 1.8 },
@@ -41,11 +98,24 @@ const AppPage = () => {
     { id: "robot-5", name: "Duck Feeder", chargeRate: 0.9 },
     { id: "robot-6", name: "De Louvre GuideBot", chargeRate: 0.8 },
   ]
-
   const selectedRobotData = robots.find((r) => r.id === selectedRobot) || robots[0]
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      {/* Toast container for center screen notifications */}
+      <Toaster position="top-center" />
+      {/* Central control-change popup */}
+      {centralEvent && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div className="bg-card p-4 rounded-lg shadow-lg backdrop-blur-sm">
+            <p className="text-lg font-bold text-sky-400">
+              {centralEvent === 'losing'
+                ? `Losing control in ${secondsToNextMinute}s`
+                : `Gaining control in ${secondsToNextMinute}s`}
+            </p>
+          </div>
+        </div>
+      )}
       <Navbar />
       <main className="flex-1 py-4 container px-4 animate-fade-in text-xl">
         {isConnected ? (
@@ -55,7 +125,7 @@ const AppPage = () => {
               {/* Twitch stream embed */}
               <div className="w-full aspect-video">
                 <iframe
-                  src={`https://player.twitch.tv/?channel=bonusducks777&parent=${window.location.hostname}&darkpopout`}
+                  src={`https://player.twitch.tv/?channel=londonexplorerdroid&parent=${window.location.hostname}&darkpopout`}
                   height="100%"
                   width="100%"
                   allowFullScreen
@@ -74,12 +144,22 @@ const AppPage = () => {
             </div>
 
             {/* Right Column - Fixed layout to prevent overlapping */}
-            <div className="col-span-12 lg:col-span-4 space-y-2 text-lg">
-              {/* Fixed height for ChatSystem - 15% taller */}
+            <div className="col-span-12 lg:col-span-4 space-y-2 text-lg min-w-0">
+              {/* Bot Info and UTC Countdown */}
+              <div className="p-2 bg-card rounded-md mb-2 grid grid-cols-2 items-center gap-4">
+                <div className="flex flex-col items-start">
+                  <h4 className="text-lg font-bold underline">{selectedRobotData.name}</h4>
+                  <span className="text-sm text-sky-500">{botFee} AVAX/min</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-xs">Next minute in:</span>
+                  <span className="text-xl font-bold">{secondsToNextMinute}s</span>
+                </div>
+              </div>
+              {/* Twitch chat embed */}
               <div className="h-[419px]">
-                {/* Twitch chat embed */}
                 <iframe
-                  src={`https://www.twitch.tv/embed/bonusducks777/chat?parent=${window.location.hostname}&darkpopout`}
+                  src={`https://www.twitch.tv/embed/londonexplorerdroid/chat?parent=${window.location.hostname}&darkpopout`}
                   height="100%"
                   width="100%"
                   sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals"

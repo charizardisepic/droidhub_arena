@@ -19,37 +19,34 @@ export const ControlPanel = () => {
 
   const { getCurrentController } = useBlockchainUtils()
 
+  // Check controller status on each UTC minute rollover
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null
     let isMounted = true
-
     const checkController = async () => {
       if (!isConnected || !address) {
         if (isMounted) setIsCurrentController(false)
         return
       }
-
       try {
         const controller = await getCurrentController()
         if (isMounted) {
           setIsCurrentController(controller.toLowerCase() === address.toLowerCase())
         }
-        // Mark data as fetched
         dataFetched.current = true
       } catch (error) {
         console.error("Error checking controller status:", error)
       }
     }
 
-    // Check immediately
+    // Initial check
     checkController()
-
-    // Set up interval to check every 5 seconds
-    intervalId = setInterval(checkController, 5000)
-
+    // Set up interval to check on minute rollover
+    const interval = setInterval(() => {
+      if (new Date().getUTCSeconds() === 0) checkController()
+    }, 1000)
     return () => {
       isMounted = false
-      if (intervalId) clearInterval(intervalId)
+      clearInterval(interval)
     }
   }, [isConnected, address, getCurrentController])
 

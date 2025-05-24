@@ -78,16 +78,19 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+   body {
+     @apply bg-background text-foreground;
+   }
 }
 
 @layer utilities {
+  /* define border-border to use CSS variable for border color */
+  .border-border {
+    border-width: 1px;
+    border-style: solid;
+    border-color: hsl(var(--border));
+  }
+  
   .glow {
     text-shadow: 0 0 10px theme('colors.primary.DEFAULT'), 0 0 20px theme('colors.primary.DEFAULT');
   }

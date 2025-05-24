@@ -21,7 +21,7 @@ interface LeaderboardEntry {
 }
 
 export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
-  const { getLeaderboard, calculateTimeRemaining } = useBlockchainUtils()
+  const { getLeaderboard, calculateTimeRemaining, getBotFee } = useBlockchainUtils()
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const { address } = useAccount()
@@ -64,20 +64,12 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
     try {
       setIsLoading(true)
       const data = await getLeaderboard()
-
-      if (data && data.length >= 2) {
-        // Calculate time remaining between top two stakers
-        const timeObj = calculateTimeRemaining(data[0].stake, data[1].stake, 2.5)
-
-        // Update the countdown state
-        setCountdown(timeObj)
-
-        // Format the time for display
-        const formattedTime = `${timeObj.minutes}m ${timeObj.seconds}s`
-
-        // Update the first entry with the calculated time
-        data[0].timeRemaining = formattedTime
-        data[0].countdown = timeObj
+      // Calculate time estimate based on current fee rate from contract
+      const rateStr = await getBotFee()
+      const rate = parseFloat(rateStr)
+      if (data.length >= 2) {
+        const est = calculateTimeRemaining(data[0].stake, data[1].stake, rate)
+        data[0].timeRemaining = `${est.minutes}m ${est.seconds}s`
       }
 
       // Round stake values to 2 decimal places
@@ -125,23 +117,15 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
             return (
               <div
                 key={stake.address}
-                className={`flex justify-between items-center p-1 rounded-md ${
+                className={`grid grid-cols-3 items-center p-1 rounded-md ${
                   index === 0 ? "bg-sky-100 dark:bg-sky-900/30" : ""
-                } ${isCurrentUser ? "border border-sky-500" : ""}`}
+                } ${stake.address.includes(address?.slice(2, 6) || "") ? "border border-sky-500" : ""}`}
               >
                 <div className="flex items-center gap-2">
                   <div className="font-bold text-xs">{index + 1}</div>
-                  <div className="flex flex-col">
-                    <span className={`text-xs font-medium ${index === 0 ? "text-sky-500" : ""}`}>
-                      {stake.address}
-                      {index === 0 && " (Controller)"}
-                      {isCurrentUser && " (You)"}
-                    </span>
-                    {index === 0 && countdoAVAXisplay && (
-                      <span className="text-[10px] text-muted-foreground">Time remaining: {countdoAVAXisplay}</span>
-                    )}
-                  </div>
+                  <span className={`text-xs font-medium ${index === 0 ? "text-sky-500" : ""}`}>{stake.address}</span>
                 </div>
+                <div className="text-xs text-muted-foreground">{stake.timeRemaining}</div>
                 <div className="text-xs font-medium">{stake.stake} AVAX</div>
               </div>
             )
