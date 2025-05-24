@@ -8,7 +8,6 @@ import { Footer } from "@/components/Footer"
 import { ControlPanel } from "@/components/ControlPanel"
 import { StakeDashboard } from "@/components/StakeDashboard"
 import { LiveLogFeed } from "@/components/LiveLogFeed"
-import { RobotCameraFeed } from "@/components/RobotCameraFeed"
 import { RobotStatus } from "@/components/RobotStatus"
 import { ChatSystem } from "@/components/ChatSystem"
 import { StakingLeaderboard } from "@/components/StakingLeaderboard"
@@ -53,12 +52,16 @@ const AppPage = () => {
           <div className="grid grid-cols-12 gap-2">
             {/* Left Column */}
             <div className="col-span-12 lg:col-span-8 space-y-2">
-              <RobotCameraFeed
-                robotId={selectedRobot}
-                robotName={selectedRobotData.name}
-                viewerCount={5}
-                chargeRate={selectedRobotData.chargeRate}
-              />
+              {/* Twitch stream embed */}
+              <div className="w-full aspect-video">
+                <iframe
+                  src={`https://player.twitch.tv/?channel=bonusducks777&parent=${window.location.hostname}`}
+                  height="100%"
+                  width="100%"
+                  allowFullScreen
+                  frameBorder="0"
+                />
+              </div>
               <ControlPanel />
               <div className="grid grid-cols-2 gap-2">
                 <div className="col-span-1">
@@ -74,7 +77,14 @@ const AppPage = () => {
             <div className="col-span-12 lg:col-span-4 space-y-2">
               {/* Fixed height for ChatSystem - 15% taller */}
               <div className="h-[419px]">
-                <ChatSystem />
+                {/* Twitch chat embed */}
+                <iframe
+                  src={`https://www.twitch.tv/embed/bonusducks777/chat?parent=${window.location.hostname}&darkpopout`}
+                  height="100%"
+                  width="100%"
+                  sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals"
+                  frameBorder="0"
+                />
               </div>
               {/* Dashboard with fixed height */}
               <div className="h-[140px]">
