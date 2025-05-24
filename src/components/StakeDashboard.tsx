@@ -180,7 +180,7 @@ export const StakeDashboard = () => {
           </h3>
 
           <div className="space-y-0.5">
-            <div className="flex justify-between items-center border-b border-border pb-0.5">
+            <div className="flex justify-between items-center">
               <span className="text-xs text-muted-foreground">Your Stake:</span>
               <span className="text-xs font-bold text-sky-400">
                 {userBalance === "Loading..." ? (
@@ -191,7 +191,7 @@ export const StakeDashboard = () => {
               </span>
             </div>
 
-            <div className="flex justify-between items-center border-b border-border pb-0.5">
+            <div className="flex justify-between items-center">
               <span className="text-xs text-muted-foreground">Top Stake:</span>
               <span className="text-xs font-bold text-sky-400">{topStake} AVAX</span>
             </div>

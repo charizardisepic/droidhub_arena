@@ -136,7 +136,7 @@ export function RobotLocationMap({ robotId = "robot-1" }: RobotLocationMapProps)
             X: {coordinates.x.toFixed(2)}, Y: {coordinates.y.toFixed(2)}
           </span>
         </div>
-        <div className="relative border rounded-md overflow-hidden w-full max-w-full min-w-0 aspect-video shrink">
+        <div className="relative rounded-md overflow-hidden w-full max-w-full min-w-0 aspect-video shrink">
           <canvas ref={canvasRef} width={300} height={150} className="w-full h-full" />
         </div>
       </div>

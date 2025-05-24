@@ -2,7 +2,7 @@
 
 import { useAccount } from "wagmi"
 import { useState, useEffect } from "react"
-import { toast, Toaster } from "@/components/ui/sonner"
+import { toast } from "@/components/ui/sonner"
 import { useSearchParams } from "react-router-dom"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
@@ -36,40 +36,59 @@ const AppPage = () => {
   const [secondsToNextMinute, setSecondsToNextMinute] = useState(60 - new Date().getUTCSeconds())
   // Central popup event ('losing' or 'gaining' control)
   const [centralEvent, setCentralEvent] = useState<'losing' | 'gaining' | null>(null)
-  // Track previous controller state
-  const [prevIsController, setPrevIsController] = useState<boolean | null>(null)
+  // Track if currently controller
+  const [currentIsController, setCurrentIsController] = useState<boolean>(false)
 
-  // Initialize controller state once
+  // Initialize controller state once on mount
   useEffect(() => {
-    ;(async () => {
-      const ctrl = await blockchainUtils.getCurrentController()
-      setPrevIsController(ctrl.toLowerCase() === address?.toLowerCase())
-    })()
-  }, [address, blockchainUtils])
+    if (isConnected && address) {
+      ;(async () => {
+        const ctrl = await blockchainUtils.getCurrentController()
+        setCurrentIsController(ctrl.toLowerCase() === address.toLowerCase())
+      })()
+    } else {
+      setCurrentIsController(false)
+    }
+  }, [address, isConnected, blockchainUtils])
 
-  // Update countdown and check control at each UTC minute
+  // Update countdown, controller state, and predict control changes every second
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const tick = async () => {
       const secs = 60 - new Date().getUTCSeconds()
       setSecondsToNextMinute(secs)
-      if (secs === 60) {
-        const ctrl = await blockchainUtils.getCurrentController()
-        const isController = ctrl.toLowerCase() === address?.toLowerCase()
-        if (prevIsController !== null && isController !== prevIsController) {
-          if (!isController) {
-            setCentralEvent('losing')
-          } else {
-            setCentralEvent('gaining')
-          }
-        }
-        setPrevIsController(isController)
-        // Update dynamic bot fee each UTC minute
-        const fee = await blockchainUtils.getBotFee()
-        setBotFee(fee)
+      if (!isConnected || !address) {
+        setCurrentIsController(false)
+        setCentralEvent(null)
+        return
       }
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [address, blockchainUtils, prevIsController])
+      try {
+        // Determine current controller
+        const ctrl = await blockchainUtils.getCurrentController()
+        const actual = ctrl.toLowerCase() === address.toLowerCase()
+        setCurrentIsController(actual)
+        // Determine next-minute top staker
+        const top = await blockchainUtils.getHighestStaker()
+        const nextIs = top.toLowerCase() === address.toLowerCase()
+        // Compute event: gaining, losing, or null
+        const newEvent: 'gaining' | 'losing' | null =
+          nextIs && !actual ? 'gaining' :
+          !nextIs && actual ? 'losing' :
+          null
+        setCentralEvent(newEvent)
+        // On minute rollover (UTC second==0), update fee
+        if (secs === 60) {
+          const fee = await blockchainUtils.getBotFee()
+          setBotFee(fee)
+        }
+      } catch (error) {
+        console.error('Error updating controller state:', error)
+      }
+    }
+    // Start ticking every second
+    const id = setInterval(tick, 1000)
+    tick()
+    return () => clearInterval(id)
+  }, [address, isConnected, blockchainUtils])
 
   useEffect(() => {
     // Update URL when robot changes
@@ -83,13 +102,6 @@ const AppPage = () => {
     setSearchParams({ robot: selectedRobot })
   }, [selectedRobot, setSearchParams])
 
-  // Clear central popup when countdown finishes
-  useEffect(() => {
-    if (centralEvent && secondsToNextMinute <= 1) {
-      setCentralEvent(null)
-    }
-  }, [secondsToNextMinute, centralEvent])
-
   const robots = [
     { id: "robot-1", name: "London Explorer", chargeRate: 2.5 },
     { id: "robot-2", name: "New York Explorer", chargeRate: 1.8 },
@@ -102,8 +114,6 @@ const AppPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Toast container for center screen notifications */}
-      <Toaster position="top-center" />
       {/* Central control-change popup */}
       {centralEvent && (
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
@@ -132,7 +142,21 @@ const AppPage = () => {
                   frameBorder="0"
                 />
               </div>
-              <ControlPanel />
+              {
+                // determine high-level control state
+                (() => {
+                  let controlState: 'controller'|'notController'|'gaining'|'losing' = 'notController'
+                  if (currentIsController) controlState = 'controller'
+                  if (centralEvent === 'gaining') controlState = 'gaining'
+                  if (centralEvent === 'losing') controlState = 'losing'
+                  return (
+                    <ControlPanel
+                      controlState={controlState}
+                      secondsToNextMinute={secondsToNextMinute}
+                    />
+                  )
+                })()
+              }
               <div className="grid grid-cols-2 gap-2 min-w-0 overflow-x-hidden">
                 <div className="col-span-1 min-w-0">
                   <RobotLocationMap robotId={selectedRobot} />

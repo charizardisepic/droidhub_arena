@@ -106,7 +106,7 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
     <Card className="neo-card flex flex-col h-full">
       <div className="p-2 flex flex-col h-full">
         <h3 className="text-sm font-bold mb-1">Staking Leaderboard</h3>
-        <div className="flex-1 overflow-y-auto space-y-2 border rounded-md p-1">
+        <div className="flex-1 overflow-y-auto space-y-2 p-1">
           {leaderboard.map((stake, index) => {
             const isCurrentUser = address && stake.address.toLowerCase().includes(address.toLowerCase().slice(2, 6))
 
