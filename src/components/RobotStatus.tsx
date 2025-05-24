@@ -86,7 +86,7 @@ export function RobotStatus({ robotId = "robot-1" }: RobotStatusProps) {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Progress value={batteryLevel !== null ? batteryLevel : 0} className="h-1.5" />
+              <Progress value={batteryLevel !== null ? batteryLevel : 0} className="h-1.5 bg-gray-700" />
               <Battery
                 className={`h-3 w-3 ${
                   batteryLevel !== null && batteryLevel < 20

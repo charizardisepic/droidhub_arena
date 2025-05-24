@@ -1,5 +1,4 @@
 "use client"
-
 import { Card } from "@/components/ui/card"
 import { useEffect, useRef, useState } from "react"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
@@ -77,6 +76,11 @@ export function RobotLocationMap({ robotId = "robot-1" }: RobotLocationMapProps)
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
+    // Resize canvas to match container
+    const { width: cw, height: ch } = canvas.getBoundingClientRect()
+    canvas.width = cw
+    canvas.height = ch
+
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -118,7 +122,7 @@ export function RobotLocationMap({ robotId = "robot-1" }: RobotLocationMapProps)
   }, [coordinates])
 
   return (
-    <Card className="neo-card h-full">
+    <Card className="neo-card h-full min-w-0 shrink">
       <div className="p-2">
         <h3 className="text-sm font-bold mb-1">Robot Location</h3>
         {error && <div className="text-xs text-red-500 mb-1">{error}</div>}
@@ -132,7 +136,7 @@ export function RobotLocationMap({ robotId = "robot-1" }: RobotLocationMapProps)
             X: {coordinates.x.toFixed(2)}, Y: {coordinates.y.toFixed(2)}
           </span>
         </div>
-        <div className="relative border rounded-md overflow-hidden aspect-video h-[240px]">
+        <div className="relative border rounded-md overflow-hidden w-full max-w-full min-w-0 aspect-video shrink">
           <canvas ref={canvasRef} width={300} height={150} className="w-full h-full" />
         </div>
       </div>

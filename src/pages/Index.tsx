@@ -8,7 +8,7 @@ const Index = () => {
   const robots = [
     { 
       id: "robot-1", 
-      title: "Warehouse Bot Alpha", 
+      title: "London Explorer", 
       isActive: true, 
       viewerCount: 5,
       thumbnailUrl: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
@@ -20,7 +20,7 @@ const Index = () => {
     },
     { 
       id: "robot-2", 
-      title: "Garden Maintenance Bot", 
+      title: "New York Explorer", 
       isActive: false,
       viewerCount: 0,
       thumbnailUrl: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73",
@@ -32,7 +32,7 @@ const Index = () => {
     },
     { 
       id: "robot-3", 
-      title: "Security Patrol Bot", 
+      title: "Dubai", 
       isActive: false,
       viewerCount: 0,
       thumbnailUrl: "https://images.unsplash.com/photo-1555255707-c07966088b7b",
@@ -44,7 +44,7 @@ const Index = () => {
     },
     { 
       id: "robot-4", 
-      title: "Delivery Bot", 
+      title: "Monster Truck #1", 
       isActive: false,
       viewerCount: 0,
       thumbnailUrl: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a",
@@ -56,7 +56,7 @@ const Index = () => {
     },
     { 
       id: "robot-5", 
-      title: "Assembly Line Bot", 
+      title: "Duck Feeder", 
       isActive: false,
       viewerCount: 0,
       thumbnailUrl: "https://images.unsplash.com/photo-1563203369-26f2e4a5ccf7",
@@ -68,7 +68,7 @@ const Index = () => {
     },
     { 
       id: "robot-6", 
-      title: "Cleaning Bot", 
+      title: "De Louvre GuideBot", 
       isActive: false,
       viewerCount: 0,
       thumbnailUrl: "https://images.unsplash.com/photo-1558137623-ce933996c730",

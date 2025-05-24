@@ -144,7 +144,7 @@ export const useBlockchainUtils = () => {
 
       // Set explicit gas parameters
       const tx = await contract.withdrawTokens(ethers.utils.parseEther(amount), {
-        gasLimit: 30000000,
+        gasLimit: 300000,
         gasPrice: ethers.utils.parseUnits("1", "gwei"),
       })
 

@@ -34,12 +34,12 @@ const AppPage = () => {
   }, [selectedRobot, setSearchParams])
 
   const robots = [
-    { id: "robot-1", name: "Warehouse Bot Alpha", chargeRate: 2.5 },
-    { id: "robot-2", name: "Garden Maintenance Bot", chargeRate: 1.8 },
-    { id: "robot-3", name: "Security Patrol Bot", chargeRate: 1.2 },
-    { id: "robot-4", name: "Delivery Bot", chargeRate: 1.5 },
-    { id: "robot-5", name: "Assembly Line Bot", chargeRate: 0.9 },
-    { id: "robot-6", name: "Cleaning Bot", chargeRate: 0.8 },
+    { id: "robot-1", name: "London Explorer", chargeRate: 2.5 },
+    { id: "robot-2", name: "New York Explorer", chargeRate: 1.8 },
+    { id: "robot-3", name: "Dubai", chargeRate: 1.2 },
+    { id: "robot-4", name: "Monster Truck #1", chargeRate: 1.5 },
+    { id: "robot-5", name: "Duck Feeder", chargeRate: 0.9 },
+    { id: "robot-6", name: "De Louvre GuideBot", chargeRate: 0.8 },
   ]
 
   const selectedRobotData = robots.find((r) => r.id === selectedRobot) || robots[0]
@@ -47,15 +47,15 @@ const AppPage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1 py-4 container px-4 animate-fade-in">
+      <main className="flex-1 py-4 container px-4 animate-fade-in text-xl">
         {isConnected ? (
           <div className="grid grid-cols-12 gap-2">
             {/* Left Column */}
-            <div className="col-span-12 lg:col-span-8 space-y-2">
+            <div className="col-span-12 lg:col-span-8 space-y-2 text-lg min-w-0">
               {/* Twitch stream embed */}
               <div className="w-full aspect-video">
                 <iframe
-                  src={`https://player.twitch.tv/?channel=bonusducks777&parent=${window.location.hostname}`}
+                  src={`https://player.twitch.tv/?channel=bonusducks777&parent=${window.location.hostname}&darkpopout`}
                   height="100%"
                   width="100%"
                   allowFullScreen
@@ -63,18 +63,18 @@ const AppPage = () => {
                 />
               </div>
               <ControlPanel />
-              <div className="grid grid-cols-2 gap-2">
-                <div className="col-span-1">
+              <div className="grid grid-cols-2 gap-2 min-w-0 overflow-x-hidden">
+                <div className="col-span-1 min-w-0">
                   <RobotLocationMap robotId={selectedRobot} />
                 </div>
-                <div className="col-span-1">
+                <div className="col-span-1 min-w-0">
                   <RobotStatus robotId={selectedRobot} />
                 </div>
               </div>
             </div>
 
             {/* Right Column - Fixed layout to prevent overlapping */}
-            <div className="col-span-12 lg:col-span-4 space-y-2">
+            <div className="col-span-12 lg:col-span-4 space-y-2 text-lg">
               {/* Fixed height for ChatSystem - 15% taller */}
               <div className="h-[419px]">
                 {/* Twitch chat embed */}

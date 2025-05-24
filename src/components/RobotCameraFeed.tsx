@@ -16,7 +16,7 @@ interface RobotCameraFeedProps {
 
 export const RobotCameraFeed = ({
   robotId = "robot-1",
-  robotName = "Warehouse Bot Alpha",
+  robotName = "London Explorer",
   viewerCount = 5,
   chargeRate = 2.5,
 }: RobotCameraFeedProps) => {
@@ -24,12 +24,12 @@ export const RobotCameraFeed = ({
   const [searchParams, setSearchParams] = useSearchParams()
 
   const robots = [
-    { id: "robot-1", name: "Warehouse Bot Alpha" },
-    { id: "robot-2", name: "Garden Maintenance Bot" },
-    { id: "robot-3", name: "Security Patrol Bot" },
-    { id: "robot-4", name: "Delivery Bot" },
-    { id: "robot-5", name: "Assembly Line Bot" },
-    { id: "robot-6", name: "Cleaning Bot" },
+    { id: "robot-1", name: "London Explorer" },
+    { id: "robot-2", name: "New York Explorer" },
+    { id: "robot-3", name: "Dubai" },
+    { id: "robot-4", name: "Monster Truck #1" },
+    { id: "robot-5", name: "Duck Feeder" },
+    { id: "robot-6", name: "De Louvre GuideBot" },
   ]
 
   const handleRobotChange = (value) => {
