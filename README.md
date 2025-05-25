@@ -1,73 +1,42 @@
-# Welcome to your Lovable project
+# DroidHub
 
-## Project info
+![DroidHub Banner](https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Our%20vision_pages-to-jpg-0004.jpg-P5vlBG70H5qmo7jk4UuLelSkjgbtBh.jpeg)
 
-**URL**: https://lovable.dev/projects/2c93ac62-7065-4bdf-8d41-ab718488b9b1
+**DroidHub** is a next-generation platform for real-time remote robot control, live video streaming, and decentralized staking. Compete for control, drive real robots, and interact with a global audience—all from your browser.
 
-## How can I edit this code?
+## Bridging Blockchain and the Physical World
+DroidHub lets anyone with a wallet and AVAX tokens stake for control of real robots. The top staker gets exclusive access to the robot's control panel, while everyone else can watch, chat, and compete for the next turn. All logic is trustless and transparent, powered by smart contracts.
 
-There are several ways of editing your application.
+## Features
+- Live robot video feed (Twitch)
+- Stake AVAX to gain minute-based control handover
+- Queue-based robot driving (keyboard, UI, or mobile)
+- Keyboard ArrowKey mode for rapid, continuous input
+- Mobile-first, responsive UI (desktop & mobile layouts)
+- Live command queue preview and instant feedback
+- Staking leaderboard, robot status, and location map
+- Secure wallet connect (RainbowKit)
 
-**Use Lovable**
+## Applications
+- Remote vehicles, drones, and city explorers
+- Games, experiments, and creative robots
+- Animal feeders, museum guides, and more
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2c93ac62-7065-4bdf-8d41-ab718488b9b1) and start prompting.
+## Tech Stack
+- React + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- RainbowKit (wallet connect)
+- Node.js API integration
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+## Getting Started
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Deployment
+- Vercel ready (see `vercel.json`)
+- Custom domain supported
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/2c93ac62-7065-4bdf-8d41-ab718488b9b1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+MIT License
