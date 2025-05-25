@@ -1,14 +1,24 @@
 # DroidHub
 
-![DroidHub Banner](https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Our%20vision_pages-to-jpg-0004.jpg-P5vlBG70H5qmo7jk4UuLelSkjgbtBh.jpeg)
+![DroidHub Banner](https://lh3.googleusercontent.com/d/1VOFa1Mrqty9PdFdmvoW1ZK9mnG4n5VYk)
+
+[**🌐 Visit DroidHub Live**](https://www.droidhub.live) &nbsp;|&nbsp; [🎬 Demo Video](https://youtu.be/3AMGjwI3Pv8)
+
+![Mission Statement](https://lh3.googleusercontent.com/d/1V_XWWxolR-XiChSlfIy6ELVbo473lvAu)
 
 DroidHub is a decentralized web application that brings real-world exploration and interaction to the blockchain. Inspired by platforms like Twitch, DroidHub enables users to watch live streams from physical robots (rovers) deployed in real environments—like city streets or event venues. Viewers can stake AVAX to compete for control of the bot, with the highest staker receiving live command privileges.
 
+![Mechanics](https://lh3.googleusercontent.com/d/1sdA0cPtkG7SagqH6zZcHz9bDLHAN7etu)
+
 Staking and control rights are transparently verified through Avalanche’s C-Chain, ensuring trustless interaction and ownership logic. Instead of routing bot commands through centralized servers, DroidHub uses a custom Layer 1 chain, purpose-built to handle real-time robot commands. This is made possible by Avalanche’s ICM, which allows for low-latency, high-throughput messaging ideal for physical-world feedback loops and managing large fleets of bots.
+
+![Applications](https://lh3.googleusercontent.com/d/1lHLjFTaDVKPnGLG-A_vmTeNzKTRO0eK8)
 
 Use cases include city exploration, real-world wildlife interactions, remote tourism, physical NFT integrations, and gamified robotic experiences—all governed by decentralized incentives.
 
 DroidHub redefines telepresence and robotics control by merging blockchain incentives, decentralized infrastructure, and real-world interaction into a seamless, on-chain experience.
+
+![Using Avalanche](https://lh3.googleusercontent.com/d/1G0IHG_Af9UYUewk_HOcRLeYrbf7QTVUV)
 
 ## Features
 - Live robot video feed (Twitch)
@@ -21,6 +31,8 @@ DroidHub redefines telepresence and robotics control by merging blockchain incen
 - Secure wallet connect (RainbowKit)
 
 ## Technical Details
+
+![Custom L1 & ICM Usecase](https://lh3.googleusercontent.com/d/1FGPpZg4LzUKyyRGJXkd2ksoSdSUocKAR)
 
 **Tech Stack & Architecture:**
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS, shadcn/ui
@@ -56,10 +68,7 @@ DroidHub redefines telepresence and robotics control by merging blockchain incen
 **Demo Video:** [Watch here](https://youtu.be/3AMGjwI3Pv8)
 **GitHub Repo:** [View source](https://github.com/bonusducks777/droidhub)
 
-## Applications
-- Remote vehicles, drones, and city explorers
-- Games, experiments, and creative robots
-- Animal feeders, museum guides, and more
+![Future Roadmap](https://lh3.googleusercontent.com/d/1IWFU8K3NVb7b2ME6s4LwrsAwjIyfwaoO)
 
 ---
 MIT License
