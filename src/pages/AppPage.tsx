@@ -236,6 +236,9 @@ const AppPage = () => {
                 onTopStakeChange={setTopStakeApp}
               />
             </div>
+            <div className="w-full max-w-md">
+              <StakingLeaderboard robotId={selectedRobot} />
+            </div>
           </div>
         </main>
         {/* Footer removed in mobile mode */}
