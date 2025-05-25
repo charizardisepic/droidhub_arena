@@ -54,15 +54,40 @@ export const ControlPanel = ({ controlState, secondsToNextMinute }: ControlPanel
     }
   };
 
-  // Add a Reset Queue button
+  // Add a Reset Queue button and queue preview
+  const [queue, setQueue] = useState<string[]>([]);
+  const [queueLoading, setQueueLoading] = useState(false);
+
+  // Fetch the current queue from the API
+  const fetchQueue = async () => {
+    setQueueLoading(true);
+    try {
+      const res = await fetch('https://droidbot-api.onrender.com/api/queue');
+      if (res.ok) {
+        const data = await res.json();
+        setQueue(data.queue || []);
+      } else {
+        setQueue([]);
+      }
+    } catch (err) {
+      setQueue([]);
+    }
+    setQueueLoading(false);
+  };
+
+  // Call fetchQueue on mount and every 2 seconds
+  useEffect(() => {
+    fetchQueue();
+    const interval = setInterval(fetchQueue, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   const resetQueue = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/queue', { method: 'DELETE' });
-      // Optionally, you could call a function to update the queue display here if you have one
-      // updateDisplay();
+      const res = await fetch('https://droidbot-api.onrender.com/api/queue', { method: 'DELETE' });
       if (res.ok) {
         toast.success('Queue reset!');
-        // Optionally, update a status element if you have one
+        fetchQueue();
         const status = document.getElementById('status');
         if (status) {
           status.innerHTML = `<p style="color: blue;">Queue cleared</p>`;
@@ -166,6 +191,16 @@ export const ControlPanel = ({ controlState, secondsToNextMinute }: ControlPanel
             >
               Reset Queue
             </Button>
+          </div>
+          <div className="mt-4 text-xs text-center bg-gray-100 dark:bg-gray-800 rounded p-2 min-h-[40px]">
+            <div className="font-bold mb-1">Command Queue:</div>
+            {queueLoading ? (
+              <span className="text-gray-400">Loading...</span>
+            ) : queue.length === 0 ? (
+              <span className="text-gray-400">Empty</span>
+            ) : (
+              <span>{queue.join(' → ')}</span>
+            )}
           </div>
         </div>
       </div>
