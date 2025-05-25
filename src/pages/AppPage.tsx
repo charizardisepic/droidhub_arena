@@ -4,7 +4,6 @@ import { useAccount } from "wagmi"
 import { useState, useEffect, useRef } from "react"
 import { toast } from "@/components/ui/sonner"
 import { useSearchParams } from "react-router-dom"
-import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { ControlPanel } from "@/components/ControlPanel"
 import { StakeDashboard } from "@/components/StakeDashboard"
@@ -15,6 +14,7 @@ import { StakingLeaderboard } from "@/components/StakingLeaderboard"
 import { RobotLocationMap } from "@/components/RobotLocationMap"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
+import { Navbar } from "@/components/Navbar"
 
 const AppPage = () => {
   const { isConnected, address } = useAccount()
@@ -195,6 +195,53 @@ const AppPage = () => {
       window.removeEventListener('force-controller-state', handleForceControllerState);
     };
   }, []);
+
+  // Detect small screen
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 768);
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        {/* No Navbar or Footer in mobile mode on AppPage */}
+        <main className="flex-1 py-4 container px-2 animate-fade-in text-xl">
+          <div className="flex flex-col items-center gap-4">
+            <ConnectButton />
+            <div className="w-full aspect-video max-w-md">
+              <iframe
+                src={`https://player.twitch.tv/?channel=londonexplorerdroid&parent=${window.location.hostname}&darkpopout`}
+                height="100%"
+                width="100%"
+                allowFullScreen
+                frameBorder="0"
+                style={{ borderRadius: 12, width: '100%', minHeight: 200 }}
+              />
+            </div>
+            <div className="w-full max-w-md">
+              <ControlPanel
+                controlState={controlState}
+                secondsToNextMinute={secondsToNextMinute}
+              />
+            </div>
+            <div className="w-full max-w-md">
+              <StakeDashboard
+                onUserBalanceChange={setUserBalanceApp}
+                onTopStakeChange={setTopStakeApp}
+              />
+            </div>
+          </div>
+        </main>
+        {/* Footer removed in mobile mode */}
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
