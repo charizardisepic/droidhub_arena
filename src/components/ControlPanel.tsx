@@ -8,9 +8,10 @@ import { toast } from "@/components/ui/sonner"
 interface ControlPanelProps {
   controlState: 'controller' | 'notController' | 'gaining' | 'losing'
   secondsToNextMinute: number
+  onlyStatusOverlay?: boolean // If true, render only the status overlay
 }
 
-export const ControlPanel = ({ controlState, secondsToNextMinute }: ControlPanelProps) => {
+export const ControlPanel = ({ controlState, secondsToNextMinute, onlyStatusOverlay }: ControlPanelProps) => {
   const [loading, setLoading] = useState(false);
   const [lastCommand, setLastCommand] = useState("");
 
@@ -157,14 +158,16 @@ export const ControlPanel = ({ controlState, secondsToNextMinute }: ControlPanel
   // Buttons enabled only for controller and losing
   const buttonsEnabled = controlState === 'controller' || controlState === 'losing';
 
-  // Keyboard-style arrow layout
-  //   [   ↑   ]
-  // [ ← ][ ↓ ][ → ]
-  // Reset Queue button to the right of the arrows
+  // Detect if we're in mobile mode by checking for onlyStatusOverlay prop in the parent
+  // If onlyStatusOverlay is undefined, check if window width is < 768 (for SSR safety, default to false)
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
+  // Only show overlay if not in mobile main panel (i.e., onlyStatusOverlay is false/null and not mobile)
+  const showOverlayInPanel = !onlyStatusOverlay && !isMobile;
 
   return (
     <Card className="neo-card p-4 relative">
-      {showOverlay && overlayMessage && (
+      {showOverlayInPanel && showOverlay && overlayMessage && (
         <div
           className={`absolute top-0 right-0 bottom-0 w-1/2 z-10 flex flex-col items-center justify-center p-4 text-center rounded-l-md backdrop-blur-sm ${overlayBgClass}`}
         >

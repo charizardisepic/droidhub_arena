@@ -15,6 +15,7 @@ import { RobotLocationMap } from "@/components/RobotLocationMap"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
 import { Navbar } from "@/components/Navbar"
+import { ControlPanelStatusOverlay } from "@/components/ControlPanelStatusOverlay"
 
 const AppPage = () => {
   const { isConnected, address } = useAccount()
@@ -241,7 +242,13 @@ const AppPage = () => {
             </div>
           </div>
         </main>
-        {/* Footer removed in mobile mode */}
+        {/* Controller status overlay for mobile mode, moved to footer */}
+        <div className="w-full px-2 pb-4 pt-2 flex justify-center sticky bottom-0 z-40 bg-background/80 backdrop-blur-md">
+          <ControlPanelStatusOverlay
+            controlState={controlState}
+            secondsToNextMinute={secondsToNextMinute}
+          />
+        </div>
       </div>
     );
   }
