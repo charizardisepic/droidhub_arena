@@ -20,7 +20,7 @@ export const ControlPanel = ({ controlState, secondsToNextMinute, onlyStatusOver
   const [firstLoad, setFirstLoad] = useState(true);
 
   // Update handleRobotCommand to call the robot API
-  const handleRobotCommand = async (command: 'up'|'down'|'left'|'right') => {
+  const handleRobotCommand = async (command: 'up'|'down'|'left'|'right'|'buzzer') => {
     if (!(controlState === 'controller' || controlState === 'losing')) {
       if (controlState === 'gaining') {
         toast.info(`Control change pending in ${secondsToNextMinute}s. Please wait.`);
@@ -31,14 +31,15 @@ export const ControlPanel = ({ controlState, secondsToNextMinute, onlyStatusOver
     }
     setLastCommand(command);
     try {
-      // Add to queue endpoint (not just /api/command)
+      // Map 'buzzer' to 'Z' for the API
+      const apiCommand = mapCommandToApi(command);
       const res = await fetch('https://droidbot-api.onrender.com/api/queue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command: mapCommandToApi(command) })
+        body: JSON.stringify({ command: apiCommand })
       });
       if (res.ok) {
-        toast.success(`Added to queue: ${command}`);
+        toast.success(`Added to queue: ${command === 'buzzer' ? 'Beep' : command}`);
         fetchQueue(); // Refresh queue display
       } else {
         toast.error('Failed to add command to queue');
@@ -276,15 +277,46 @@ export const ControlPanel = ({ controlState, secondsToNextMinute, onlyStatusOver
         </div>
       )}
       <div className="flex items-start justify-start gap-4 mt-2">
-        <div className="flex flex-col items-center">
-          <div className="flex justify-center mb-2">
-            <Button onClick={() => handleRobotCommand('up')} disabled={!buttonsEnabled} className="w-14 h-14">↑</Button>
-          </div>
-          <div className="flex justify-center gap-2">
-            <Button onClick={() => handleRobotCommand('left')} disabled={!buttonsEnabled} className="w-14 h-14">←</Button>
-            <Button onClick={() => handleRobotCommand('down')} disabled={!buttonsEnabled} className="w-14 h-14">↓</Button>
-            <Button onClick={() => handleRobotCommand('right')} disabled={!buttonsEnabled} className="w-14 h-14">→</Button>
-          </div>
+        <div className="grid grid-rows-2 grid-cols-3 gap-2">
+          {/* Top row: Beep (left), Up (center), empty (right) */}
+          <Button
+            onClick={() => handleRobotCommand('buzzer')}
+            disabled={!buttonsEnabled}
+            className="w-14 h-14 bg-orange-400 hover:bg-orange-500 text-black font-bold col-start-1 row-start-1"
+            title="Beep/Buzzer"
+          >
+            🔔
+          </Button>
+          <Button
+            onClick={() => handleRobotCommand('up')}
+            disabled={!buttonsEnabled}
+            className="w-14 h-14 col-start-2 row-start-1"
+          >
+            ↑
+          </Button>
+          <div className="col-start-3 row-start-1 w-14 h-14" />
+          {/* Bottom row: Left, Down, Right */}
+          <Button
+            onClick={() => handleRobotCommand('left')}
+            disabled={!buttonsEnabled}
+            className="w-14 h-14 col-start-1 row-start-2"
+          >
+            ←
+          </Button>
+          <Button
+            onClick={() => handleRobotCommand('down')}
+            disabled={!buttonsEnabled}
+            className="w-14 h-14 col-start-2 row-start-2"
+          >
+            ↓
+          </Button>
+          <Button
+            onClick={() => handleRobotCommand('right')}
+            disabled={!buttonsEnabled}
+            className="w-14 h-14 col-start-3 row-start-2"
+          >
+            →
+          </Button>
         </div>
         <div className="flex flex-col justify-center ml-4 w-32">
           <div className="flex flex-col items-center gap-2 mb-2">
@@ -330,6 +362,7 @@ function mapCommandToApi(cmd: string) {
     case 'down': return 'B';
     case 'left': return 'L';
     case 'right': return 'R';
+    case 'buzzer': return 'Z';
     default: return 'S';
   }
 }
