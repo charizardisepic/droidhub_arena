@@ -159,6 +159,113 @@ export const ControlPanel = ({ controlState, secondsToNextMinute, onlyStatusOver
   // Only show overlay if not in mobile main panel (i.e., onlyStatusOverlay is false/null and not mobile)
   const showOverlayInPanel = !onlyStatusOverlay && !isMobile;
 
+  // Slider state for arrow input
+  const [sliderValue, setSliderValue] = useState(0); // -1: left, 0: neutral, 1: right
+  const sliderIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const sliderActiveRef = useRef(false);
+
+  // Helper to map slider value to command
+  function sliderToCommand(val: number): 'left' | 'right' | null {
+    if (val === -1) return 'left';
+    if (val === 1) return 'right';
+    return null;
+  }
+
+  // Handle slider change (simulate arrow key down/up)
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    setSliderValue(val);
+    if (val === 0) {
+      // Slider released, clear queue
+      if (sliderIntervalRef.current) {
+        clearInterval(sliderIntervalRef.current);
+        sliderIntervalRef.current = null;
+      }
+      if (sliderActiveRef.current) {
+        resetQueue();
+        sliderActiveRef.current = false;
+      }
+    } else {
+      // Slider moved to left/right, start sending command every 1s
+      if (!sliderActiveRef.current) {
+        sliderActiveRef.current = true;
+        handleSliderCommand(val); // send immediately
+        sliderIntervalRef.current = setInterval(() => {
+          handleSliderCommand(val);
+        }, 1000);
+      }
+    }
+  };
+
+  // Helper to send slider command
+  const handleSliderCommand = (val: number) => {
+    const cmd = sliderToCommand(val);
+    if (cmd) {
+      handleRobotCommand(cmd);
+    }
+  };
+
+  // Clean up interval on unmount
+  useEffect(() => {
+    return () => {
+      if (sliderIntervalRef.current) clearInterval(sliderIntervalRef.current);
+    };
+  }, []);
+
+  // Keyboard input mode state
+  const [keyboardMode, setKeyboardMode] = useState(false);
+  const keyIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const keyDownRef = useRef<string | null>(null);
+
+  // Handle keyboard events for arrow keys
+  useEffect(() => {
+    if (!keyboardMode) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      // Prevent default scrolling for arrow keys
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+      }
+      if (keyDownRef.current) return; // Only allow one key at a time
+      let cmd: 'up'|'down'|'left'|'right'|null = null;
+      if (e.key === 'ArrowUp') cmd = 'up';
+      if (e.key === 'ArrowDown') cmd = 'down';
+      if (e.key === 'ArrowLeft') cmd = 'left';
+      if (e.key === 'ArrowRight') cmd = 'right';
+      if (cmd) {
+        keyDownRef.current = cmd;
+        handleRobotCommand(cmd); // send immediately
+        keyIntervalRef.current = setInterval(() => {
+          handleRobotCommand(cmd!);
+        }, 1000);
+      }
+    }
+    function handleKeyUp(e: KeyboardEvent) {
+      // Prevent default scrolling for arrow keys
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+      }
+      let cmd: 'up'|'down'|'left'|'right'|null = null;
+      if (e.key === 'ArrowUp') cmd = 'up';
+      if (e.key === 'ArrowDown') cmd = 'down';
+      if (e.key === 'ArrowLeft') cmd = 'left';
+      if (e.key === 'ArrowRight') cmd = 'right';
+      if (cmd && keyDownRef.current === cmd) {
+        if (keyIntervalRef.current) clearInterval(keyIntervalRef.current);
+        keyIntervalRef.current = null;
+        keyDownRef.current = null;
+        resetQueue();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown, { passive: false });
+    window.addEventListener('keyup', handleKeyUp, { passive: false });
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      if (keyIntervalRef.current) clearInterval(keyIntervalRef.current);
+      keyDownRef.current = null;
+    };
+  }, [keyboardMode]);
+
   return (
     <Card className="neo-card p-4 relative">
       {showOverlayInPanel && showOverlay && overlayMessage && (
@@ -180,6 +287,17 @@ export const ControlPanel = ({ controlState, secondsToNextMinute, onlyStatusOver
           </div>
         </div>
         <div className="flex flex-col justify-center ml-4 w-32">
+          <div className="flex flex-col items-center gap-2 mb-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={keyboardMode}
+                onChange={e => setKeyboardMode(e.target.checked)}
+                className="accent-sky-500"
+              />
+              <span className="text-xs font-medium">ArrowKey Input</span>
+            </label>
+          </div>
           <div className="flex justify-center">
             <Button
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full"
