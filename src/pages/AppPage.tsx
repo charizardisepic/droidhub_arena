@@ -1,7 +1,7 @@
 "use client"
 
 import { useAccount } from "wagmi"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { toast } from "@/components/ui/sonner"
 import { useSearchParams } from "react-router-dom"
 import { Navbar } from "@/components/Navbar"
@@ -36,8 +36,22 @@ const AppPage = () => {
   const [secondsToNextMinute, setSecondsToNextMinute] = useState(60 - new Date().getUTCSeconds())
   // Central popup event ('losing' or 'gaining' control)
   const [centralEvent, setCentralEvent] = useState<'losing' | 'gaining' | null>(null)
+  // Separate popup for stake/unstake feedback
+  const [stakePopup, setStakePopup] = useState<string | null>(null);
+
+  // Auto-hide stake/unstake popup after 3 seconds
+  useEffect(() => {
+    if (stakePopup) {
+      const timeout = setTimeout(() => {
+        setStakePopup(null);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [stakePopup]);
+
   // Track if currently controller
   const [currentIsController, setCurrentIsController] = useState<boolean>(false)
+  const [controlState, setControlState] = useState<'controller'|'notController'|'gaining'|'losing'>('notController')
 
   // Initialize controller state once on mount
   useEffect(() => {
@@ -51,44 +65,90 @@ const AppPage = () => {
     }
   }, [address, isConnected, blockchainUtils])
 
-  // Update countdown, controller state, and predict control changes every second
+  const controllerRef = useRef(false);
+  const lastControllerUpdateRef = useRef<number | null>(null);
+
+  // Set ref only on mount/address change (not on every render or stake change)
+  useEffect(() => {
+    if (isConnected && address) {
+      (async () => {
+        const ctrl = await blockchainUtils.getCurrentController();
+        const isCtrl = ctrl.toLowerCase() === address.toLowerCase();
+        controllerRef.current = isCtrl;
+        setCurrentIsController(isCtrl);
+        lastControllerUpdateRef.current = Math.floor(Date.now() / 60000); // current UTC minute
+        console.log('[INIT] Controller:', ctrl, 'IsController:', isCtrl, 'Address:', address, 'Minute:', lastControllerUpdateRef.current);
+      })();
+    } else {
+      controllerRef.current = false;
+      setCurrentIsController(false);
+      lastControllerUpdateRef.current = null;
+      console.log('[INIT] Not connected or no address');
+    }
+  }, [address, isConnected]);
+
   useEffect(() => {
     const tick = async () => {
-      const secs = 60 - new Date().getUTCSeconds()
-      setSecondsToNextMinute(secs)
+      const secs = 60 - new Date().getUTCSeconds();
+      setSecondsToNextMinute(secs);
+      const now = new Date();
       if (!isConnected || !address) {
-        setCurrentIsController(false)
-        setCentralEvent(null)
-        return
+        setCentralEvent(null);
+        setControlState('notController');
+        console.log('[TICK] Not connected or no address', { now });
+        return;
       }
       try {
-        // Determine current controller
-        const ctrl = await blockchainUtils.getCurrentController()
-        const actual = ctrl.toLowerCase() === address.toLowerCase()
-        setCurrentIsController(actual)
-        // Determine next-minute top staker
-        const top = await blockchainUtils.getHighestStaker()
-        const nextIs = top.toLowerCase() === address.toLowerCase()
-        // Compute event: gaining, losing, or null
-        const newEvent: 'gaining' | 'losing' | null =
-          nextIs && !actual ? 'gaining' :
-          !nextIs && actual ? 'losing' :
-          null
-        setCentralEvent(newEvent)
-        // On minute rollover (UTC second==0), update fee
-        if (secs === 60) {
-          const fee = await blockchainUtils.getBotFee()
-          setBotFee(fee)
+        // Only update actual controller on minute rollover (and only once per minute)
+        const nowMinute = Math.floor(Date.now() / 60000);
+        if (lastControllerUpdateRef.current !== nowMinute && secs === 60) {
+          const ctrl = await blockchainUtils.getCurrentController();
+          const isCtrl = ctrl.toLowerCase() === address.toLowerCase();
+          controllerRef.current = isCtrl;
+          setCurrentIsController(isCtrl);
+          lastControllerUpdateRef.current = nowMinute;
+          const fee = await blockchainUtils.getBotFee();
+          setBotFee(fee);
+          console.log('[ROLLOVER]', { now, ctrl, isCtrl, address, nowMinute });
         }
+        // Always get next top staker for prediction
+        const top = await blockchainUtils.getHighestStaker();
+        const nextIs = top.toLowerCase() === address.toLowerCase();
+
+        // UI state logic (controllerRef.current = controller for this minute)
+        let uiState = '';
+        if (controllerRef.current && !nextIs) {
+          setCentralEvent('losing');
+          uiState = 'losing';
+        } else if (!controllerRef.current && nextIs) {
+          setCentralEvent('gaining');
+          uiState = 'gaining';
+        } else if (controllerRef.current && nextIs) {
+          setCentralEvent(null); // controller
+          uiState = 'controller';
+        } else if (!controllerRef.current && !nextIs) {
+          setCentralEvent(null); // notController
+          uiState = 'notController';
+        }
+        setControlState(uiState as typeof controlState);
+        console.log('[TICK]', {
+          now,
+          secs,
+          controllerForMinute: controllerRef.current,
+          nextIsController: nextIs,
+          uiState,
+          currentIsController,
+          centralEvent,
+          lastControllerUpdateRef: lastControllerUpdateRef.current,
+        });
       } catch (error) {
-        console.error('Error updating controller state:', error)
+        console.error('Error updating controller state:', error);
       }
-    }
-    // Start ticking every second
-    const id = setInterval(tick, 1000)
-    tick()
-    return () => clearInterval(id)
-  }, [address, isConnected, blockchainUtils])
+    };
+    const id = setInterval(tick, 1000);
+    tick();
+    return () => clearInterval(id);
+  }, [isConnected, address, blockchainUtils])
 
   useEffect(() => {
     // Update URL when robot changes
@@ -112,17 +172,37 @@ const AppPage = () => {
   ]
   const selectedRobotData = robots.find((r) => r.id === selectedRobot) || robots[0]
 
+  // Dismiss stakePopup as soon as userBalance or topStake changes (stake/unstake reflected)
+  // This effect must run in AppPage, so we need to pass userBalance and topStake up from StakeDashboard
+  // We'll use a callback prop to lift state up
+  const [userBalance, setUserBalanceApp] = useState<string>("0.0");
+  const [topStake, setTopStakeApp] = useState<string>("0.0");
+
+  useEffect(() => {
+    if (stakePopup) {
+      setStakePopup(null);
+    }
+    // eslint-disable-next-line
+  }, [userBalance, topStake]);
+
+  // Listen for the custom event from ControlPanel to force controller state on first load
+  useEffect(() => {
+    function handleForceControllerState() {
+      setControlState('controller');
+    }
+    window.addEventListener('force-controller-state', handleForceControllerState);
+    return () => {
+      window.removeEventListener('force-controller-state', handleForceControllerState);
+    };
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Central control-change popup */}
-      {centralEvent && (
+      {/* Remove central control-change popup, only keep stake/unstake feedback popup */}
+      {stakePopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
           <div className="bg-card p-4 rounded-lg shadow-lg backdrop-blur-sm">
-            <p className="text-lg font-bold text-sky-400">
-              {centralEvent === 'losing'
-                ? `Losing control in ${secondsToNextMinute}s`
-                : `Gaining control in ${secondsToNextMinute}s`}
-            </p>
+            <p className="text-lg font-bold text-sky-400">{stakePopup}</p>
           </div>
         </div>
       )}
@@ -142,21 +222,10 @@ const AppPage = () => {
                   frameBorder="0"
                 />
               </div>
-              {
-                // determine high-level control state
-                (() => {
-                  let controlState: 'controller'|'notController'|'gaining'|'losing' = 'notController'
-                  if (currentIsController) controlState = 'controller'
-                  if (centralEvent === 'gaining') controlState = 'gaining'
-                  if (centralEvent === 'losing') controlState = 'losing'
-                  return (
-                    <ControlPanel
-                      controlState={controlState}
-                      secondsToNextMinute={secondsToNextMinute}
-                    />
-                  )
-                })()
-              }
+              <ControlPanel
+                controlState={controlState}
+                secondsToNextMinute={secondsToNextMinute}
+              />
               <div className="grid grid-cols-2 gap-2 min-w-0 overflow-x-hidden">
                 <div className="col-span-1 min-w-0">
                   <RobotLocationMap robotId={selectedRobot} />
@@ -192,7 +261,10 @@ const AppPage = () => {
               </div>
               {/* Dashboard with fixed height */}
               <div className="h-[140px]">
-                <StakeDashboard />
+                <StakeDashboard
+                  onUserBalanceChange={setUserBalanceApp}
+                  onTopStakeChange={setTopStakeApp}
+                />
               </div>
               {/* Add fixed height to prevent overflow */}
               <div className="h-[200px]">

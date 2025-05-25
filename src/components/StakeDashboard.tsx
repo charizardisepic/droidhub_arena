@@ -10,7 +10,12 @@ import { useBlockchainUtils } from "@/lib/blockchainUtils"
 import { toast } from "@/components/ui/sonner"
 import { ethers } from "ethers"
 
-export const StakeDashboard = () => {
+interface StakeDashboardProps {
+  onUserBalanceChange?: (balance: string) => void
+  onTopStakeChange?: (stake: string) => void
+}
+
+export const StakeDashboard = ({ onUserBalanceChange, onTopStakeChange }: StakeDashboardProps) => {
   const { address, isConnected } = useAccount()
   // Dialog open state
   const [isStakeDialogOpen, setIsStakeDialogOpen] = useState(false)
@@ -90,6 +95,15 @@ export const StakeDashboard = () => {
       if (intervalId) clearInterval(intervalId)
     }
   }, [isConnected, address, getUserBalance, getHighestStaker, getStakedBalance])
+
+  // Callbacks for parent component
+  useEffect(() => {
+    if (onUserBalanceChange) onUserBalanceChange(userBalance)
+  }, [userBalance, onUserBalanceChange])
+
+  useEffect(() => {
+    if (onTopStakeChange) onTopStakeChange(topStake)
+  }, [topStake, onTopStakeChange])
 
   const handleStake = async () => {
     if (!isConnected || !address) {
