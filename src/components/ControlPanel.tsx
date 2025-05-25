@@ -58,8 +58,15 @@ export const ControlPanel = ({ controlState, secondsToNextMinute }: ControlPanel
   const resetQueue = async () => {
     try {
       const res = await fetch('http://localhost:5000/api/queue', { method: 'DELETE' });
+      // Optionally, you could call a function to update the queue display here if you have one
+      // updateDisplay();
       if (res.ok) {
         toast.success('Queue reset!');
+        // Optionally, update a status element if you have one
+        const status = document.getElementById('status');
+        if (status) {
+          status.innerHTML = `<p style="color: blue;">Queue cleared</p>`;
+        }
       } else {
         toast.error('Failed to reset queue');
       }
