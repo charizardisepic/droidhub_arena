@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +8,7 @@ import { RainbowKitProvider } from "@/components/RainbowKitProvider";
 import Index from "./pages/Index";
 import AppPage from "./pages/AppPage";
 import NotFound from "./pages/NotFound";
+import Docs from "./pages/Docs";
 
 const App = () => (
   <ThemeProvider defaultTheme="dark">
@@ -20,6 +20,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/app" element={<AppPage />} />
+            <Route path="/docs" element={<Docs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

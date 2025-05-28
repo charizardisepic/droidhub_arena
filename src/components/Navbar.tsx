@@ -86,16 +86,18 @@ export const Navbar = () => {
             >
               App
             </Link>
-            <a
-              href="#"
-              className="text-foreground/80 hover:text-sky-400 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/docs"
+              className={
+                location.pathname === "/docs"
+                  ? "text-sky-400 font-semibold"
+                  : "text-foreground/80 hover:text-sky-400 transition-colors"
+              }
             >
               Docs
-            </a>
+            </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/bonusducks777/droidhub/blob/main/README.md"
               className="text-foreground/80 hover:text-sky-400 transition-colors"
               target="_blank"
               rel="noopener noreferrer"

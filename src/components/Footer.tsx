@@ -7,7 +7,7 @@ export const Footer = () => {
         </p>
         <div className="flex items-center gap-4">
           <a
-            href="https://github.com"
+            href="https://github.com/bonusducks777/droidhub/blob/main/README.md"
             target="_blank"
             rel="noreferrer"
             className="text-muted-foreground hover:text-foreground transition-colors"
