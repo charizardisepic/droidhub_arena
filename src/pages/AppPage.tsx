@@ -1,6 +1,5 @@
 "use client"
 
-import { useAccount } from "wagmi"
 import { useState, useEffect, useRef } from "react"
 import { toast } from "@/components/ui/sonner"
 import { useSearchParams } from "react-router-dom"
@@ -13,15 +12,21 @@ import { ChatSystem } from "@/components/ChatSystem"
 import { StakingLeaderboard } from "@/components/StakingLeaderboard"
 import { RobotLocationMap } from "@/components/RobotLocationMap"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { UniversalConnectButton } from "@/components/UniversalConnectButton"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
 import { Navbar } from "@/components/Navbar"
 import { ControlPanelStatusOverlay } from "@/components/ControlPanelStatusOverlay"
+import { ArenaIntegrationDemo } from "@/components/ArenaIntegrationDemo"
+import { checkArenaEnvironment } from "@/lib/arenaConfig"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 
 const AppPage = () => {
-  const { isConnected, address } = useAccount()
+  const { isConnected, address } = useWalletAccount()
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedRobot, setSelectedRobot] = useState(searchParams.get("robot") || "robot-1")
   const blockchainUtils = useBlockchainUtils()
+  const isArenaEnvironment = checkArenaEnvironment()
+  
   // Dynamic bot fee (AVAX per min)
   const [botFee, setBotFee] = useState<string>("0.0")
 
@@ -214,7 +219,7 @@ const AppPage = () => {
         {/* No Navbar or Footer in mobile mode on AppPage */}
         <main className="flex-1 py-4 container px-2 animate-fade-in text-xl">
           <div className="flex flex-col items-center gap-4">
-            <ConnectButton />
+            <UniversalConnectButton />
             <div className="w-full aspect-video max-w-md">
               <iframe
                 src={`https://player.twitch.tv/?channel=londonexplorerdroid&parent=${window.location.hostname}&darkpopout`}
@@ -264,6 +269,23 @@ const AppPage = () => {
         </div>
       )}
       <Navbar />
+      
+      {/* Arena Integration Demo - Show when running in Arena */}
+      {isArenaEnvironment && (
+        <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-b border-blue-500/20">
+          <div className="container mx-auto px-4 py-2">
+            <div className="text-center">
+              <span className="inline-flex items-center gap-2 text-sm font-medium text-blue-400">
+                🚀 Running in Arena Platform
+                <span className="text-xs text-muted-foreground">
+                  Enhanced with Arena SDK integration
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <main className="flex-1 py-4 container px-4 animate-fade-in text-xl">
         {isConnected ? (
           <div className="grid grid-cols-12 gap-2">
@@ -341,7 +363,7 @@ const AppPage = () => {
               Please connect your wallet to view the robot feed and control panel.
             </p>
             <div className="z-50 relative">
-              <ConnectButton />
+              <UniversalConnectButton />
             </div>
           </div>
         )}

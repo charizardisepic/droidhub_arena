@@ -15,6 +15,18 @@
 
   <body>
     <div id="root"></div>
+    
+    <!-- Arena SDK Integration -->
+    <script type="module">
+      // Arena SDK will be injected by the Arena platform
+      // This script makes it available globally for our React app
+      if (window.ArenaAppStoreSdk) {
+        console.log('Arena SDK detected and available');
+      } else {
+        console.log('Running outside Arena platform - using fallback providers');
+      }
+    </script>
+    
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>

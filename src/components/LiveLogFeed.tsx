@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
-import { useAccount } from "wagmi"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 
 interface LogEntry {
   time: string
@@ -18,7 +18,7 @@ export const LiveLogFeed = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [logs, setLogs] = useState<LogEntry[]>([])
   const blockchainUtils = useBlockchainUtils()
-  const { isConnected } = useAccount()
+  const { isConnected } = useWalletAccount()
 
   // Listen for blockchain events and update logs
   useEffect(() => {

@@ -1,8 +1,8 @@
 "use client"
 
-import { useAccount } from "wagmi"
 import * as ethers from "ethers"
 import { useState, useCallback } from "react"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 
 // RPC endpoints for Avalanche networks
 const RPC_URL_MAINNET = "https://avalanche-c-chain-rpc.publicnode.com"
@@ -90,7 +90,7 @@ const ABI = [
 ]
 
 export const useBlockchainUtils = () => {
-  const { address, isConnected } = useAccount()
+  const { address, isConnected } = useWalletAccount()
   const [cachedLeaderboard, setCachedLeaderboard] = useState<any[]>([])
 
   // Helper to get signer for write operations

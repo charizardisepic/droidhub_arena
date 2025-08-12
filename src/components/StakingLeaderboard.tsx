@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { useBlockchainUtils } from "@/lib/blockchainUtils"
 import { useState, useEffect } from "react"
-import { useAccount } from "wagmi"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 
 interface StakingLeaderboardProps {
   robotId: string
@@ -24,7 +24,7 @@ export function StakingLeaderboard({ robotId }: StakingLeaderboardProps) {
   const { getLeaderboard, calculateTimeRemaining, getBotFee } = useBlockchainUtils()
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const { address } = useAccount()
+  const { address } = useWalletAccount()
 
   // Add state for countdown
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 })

@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ArenaConnectButton } from '@/components/ArenaConnectButton';
+import { checkArenaEnvironment } from '@/lib/arenaConfig';
 
 export const HeroSection = () => {
+  const isArenaEnvironment = checkArenaEnvironment();
+
   return (
     <div className="relative overflow-hidden py-24 grid-pattern animate-fade-in">
       <div className="container px-4 md:px-6">
@@ -16,9 +20,25 @@ export const HeroSection = () => {
           </div>
           <div className="flex justify-center w-full mt-6 relative z-50">
             <div className="hover-scale relative z-50">
-              <ConnectButton showBalance={false} chainStatus="icon" />
+              {isArenaEnvironment ? (
+                <ArenaConnectButton 
+                  variant="default" 
+                  size="lg" 
+                  showDetails={false}
+                  className="min-w-[200px]"
+                />
+              ) : (
+                <ConnectButton showBalance={false} chainStatus="icon" />
+              )}
             </div>
           </div>
+          
+          {isArenaEnvironment && (
+            <div className="mt-4 text-sm text-blue-400/80 flex items-center gap-2">
+              <div className="h-2 w-2 bg-blue-400 rounded-full animate-pulse"></div>
+              Connected via Arena Platform
+            </div>
+          )}
         </div>
       </div>
       

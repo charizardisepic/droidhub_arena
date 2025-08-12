@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { useAccount } from "wagmi"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { Users, Clock } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -20,7 +20,7 @@ export const RobotCameraFeed = ({
   viewerCount = 5,
   chargeRate = 2.5,
 }: RobotCameraFeedProps) => {
-  const { isConnected } = useAccount()
+  const { isConnected } = useWalletAccount()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const robots = [

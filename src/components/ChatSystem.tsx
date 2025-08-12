@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useAccount } from "wagmi"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,7 +18,7 @@ interface ChatMessage {
 }
 
 export const ChatSystem = () => {
-  const { address, isConnected } = useAccount()
+  const { address, isConnected } = useWalletAccount()
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: 1, address: "0xd8da...6273", message: "Just increased my stake!", timestamp: Date.now() - 300000 },
     { id: 2, address: "0xab12...9f3d", message: "The bot is moving quite well today", timestamp: Date.now() - 120000 },

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useAccount } from "wagmi"
+import { useWalletAccount } from "@/hooks/useWalletAccount"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -16,7 +16,7 @@ interface StakeDashboardProps {
 }
 
 export const StakeDashboard = ({ onUserBalanceChange, onTopStakeChange }: StakeDashboardProps) => {
-  const { address, isConnected } = useAccount()
+  const { address, isConnected } = useWalletAccount()
   // Dialog open state
   const [isStakeDialogOpen, setIsStakeDialogOpen] = useState(false)
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false)
